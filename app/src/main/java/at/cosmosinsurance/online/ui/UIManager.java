@@ -11,8 +11,9 @@ import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.webkit.WebView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import at.cosmosinsurance.online.Constants;
 import at.cosmosinsurance.online.R;
@@ -23,42 +24,45 @@ public class UIManager {
     private WebView webView;
     private ProgressBar progressSpinner;
     private ProgressBar progressBar;
-    private LinearLayout offlineContainer;
+    private SwipeRefreshLayout swipeContainer;
     private boolean pageLoaded = false;
 
     public UIManager(Activity activity) {
         this.activity = activity;
-        this.progressBar = (ProgressBar) activity.findViewById(R.id.progressBarBottom);
-        this.progressSpinner = (ProgressBar) activity.findViewById(R.id.progressSpinner);
-        this.offlineContainer = (LinearLayout) activity.findViewById(R.id.offlineContainer);
-        this.webView = (WebView) activity.findViewById(R.id.webView);
+        this.progressBar = activity.findViewById(R.id.progressBar);
+        this.progressSpinner = activity.findViewById(R.id.progressSpinner);
+        this.swipeContainer = activity.findViewById(R.id.swipeContainer);
+        this.webView = activity.findViewById(R.id.webView);
+    }
 
-        // set click listener for offline-screen
-        offlineContainer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                webView.loadUrl(Constants.getWebAppUrl());
-                setOffline(false);
-            }
-        });
+    /**
+     * Setup swipe refresh functionality
+     */
+    public void setupSwipeContainer() {
+        if (Constants.REFRESH) {
+            swipeContainer.setOnRefreshListener(() -> {
+                // Pass the current activity context to the pull_fresh method
+                webView.reload();
+                swipeContainer.setRefreshing(false);
+            });
+            // Only enable pull-to-refresh when at the top of the page
+            webView.getViewTreeObserver().addOnScrollChangedListener(() -> swipeContainer.setEnabled(webView.getScrollY() == 0));
+        } else {
+            swipeContainer.setRefreshing(false);
+            swipeContainer.setEnabled(false);
+        }
     }
 
     // Set Loading Progress for ProgressBar
     public void setLoadingProgress(int progress) {
         // set progress in UI
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            progressBar.setProgress(progress, true);
-        } else {
-            progressBar.setProgress(progress);
-        }
-
+        progressBar.setProgress(progress, true);
         // hide ProgressBar if not applicable
         if (progress >= 0 && progress < 100) {
             progressBar.setVisibility(View.VISIBLE);
         } else {
             progressBar.setVisibility(View.INVISIBLE);
         }
-
         // get app screen back if loading is almost complete
         if (progress >= Constants.PROGRESS_THRESHOLD && !pageLoaded) {
             setLoading(false);
@@ -78,35 +82,24 @@ public class UIManager {
         pageLoaded = !isLoading;
     }
 
-    // handle visibility of offline screen
-    public void setOffline(boolean offline) {
-        if (offline) {
-            setLoadingProgress(100);
-            webView.setVisibility(View.INVISIBLE);
-            offlineContainer.setVisibility(View.VISIBLE);
-        } else {
-            webView.setVisibility(View.VISIBLE);
-            offlineContainer.setVisibility(View.INVISIBLE);
-        }
-    }
 
     // set icon in recent activity view to a white one to be visible in the app bar
     public void changeRecentAppsIcon() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Bitmap iconWhite = BitmapFactory.decodeResource(activity.getResources(), R.drawable.ic_appbar);
-
-            TypedValue typedValue = new TypedValue();
-            Resources.Theme theme = activity.getTheme();
-            theme.resolveAttribute(R.color.colorPrimary, typedValue, true);
-            int color = typedValue.data;
-
-            ActivityManager.TaskDescription description = new ActivityManager.TaskDescription(
-                    activity.getResources().getString(R.string.app_name),
-                    iconWhite,
-                    color
-            );
-            activity.setTaskDescription(description);
-            iconWhite.recycle();
+        String label = activity.getString(R.string.app_name);
+        Bitmap icon = BitmapFactory.decodeResource(activity.getResources(), R.mipmap.ic_launcher);
+        int color = ContextCompat.getColor(activity, R.color.white);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            // API 28+: Icon is governed by the manifest launcher icon;
+            // TaskDescription.Builder configures the header bar color and label
+            ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription.Builder().build();
+            ActivityManager.TaskDescription.Builder taskDescriptionBuilder = new ActivityManager.TaskDescription.Builder();
+            taskDescriptionBuilder.setLabel(label);
+            taskDescriptionBuilder.setPrimaryColor(color);
+            activity.setTaskDescription(taskDescription);
+        }else{
+            // Legacy implementation (API 21 to 29) using deprecated constructor
+            ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription(label, icon, color);
+            activity.setTaskDescription(taskDescription);
         }
     }
 }
