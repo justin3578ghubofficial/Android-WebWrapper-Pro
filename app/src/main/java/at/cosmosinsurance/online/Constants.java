@@ -13,6 +13,9 @@ public class Constants {
 	
 
 	public static boolean REFRESH = true;
+    public static boolean EXIT_ON_BACK = true;
+    public static boolean SHOW_EXIT_DIALOG = true;
+
 
 	// User Agent tweaks
     public static boolean POSTFIX_USER_AGENT = true; // set to true to append USER_AGENT_POSTFIX to user agent
