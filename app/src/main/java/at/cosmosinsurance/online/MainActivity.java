@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.webkit.WebChromeClient;
 import android.widget.Toast;
 
@@ -42,35 +43,33 @@ public class MainActivity extends AppCompatActivity {
         webViewHelper = new WebViewHelper(this, uiManager);
 
         // Setup App
-        webViewHelper.setupWebView();
+        uiManager.setupSwipeContainer();
+        webViewHelper.initWebView();
         uiManager.changeRecentAppsIcon();
         checkAndRequestPermissions();
 
         // Check for Intents
         try {
-            Intent i = getIntent();
-            String intentAction = i.getAction();
-            // Handle URLs opened in Browser
-            if (!intentHandled && intentAction != null && intentAction.equals(Intent.ACTION_VIEW)){
-                Uri intentUri = i.getData();
-                String intentText = "";
-                if (intentUri != null){
-                    intentText = intentUri.toString();
-                }
-                // Load up the URL specified in the Intent
-                if (!intentText.equals("")) {
+            Intent intent = getIntent();
+            String intentAction = (intent != null) ? intent.getAction() : null;
+            if (!intentHandled && Intent.ACTION_VIEW.equals(intentAction)) {
+                Uri intentUri = (intent != null) ? intent.getData() : null;
+                if (intentUri != null && !TextUtils.isEmpty(intentUri.toString())) {
                     intentHandled = true;
-                    webViewHelper.loadIntentUrl(intentText);
+                    webViewHelper.loadIntentUrl(intentUri.toString());
+                    return;
                 }
-            } else {
-                // Load up the Web App
+            }
+            // Only load home if nothing has been handled yet
+            if (!intentHandled) {
                 webViewHelper.loadHome();
             }
         } catch (Exception e) {
-            // Load up the Web App
-            webViewHelper.loadHome();
+            if (!intentHandled) {
+                webViewHelper.loadHome();
+            }
         }
-    }
+    }    
 
     @Override
     protected void onPause() {
