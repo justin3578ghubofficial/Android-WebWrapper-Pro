@@ -111,14 +111,6 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
     }
 
-    // Handle back-press in browser
-    @Override
-    public void onBackPressed() {
-        if (!webViewHelper.goBack()) {
-            super.onBackPressed();
-        }
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -152,20 +144,16 @@ public class MainActivity extends AppCompatActivity {
 
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent intent)
-    {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-        {
-            if (requestCode == REQUEST_SELECT_FILE)
-            {
+    public void onActivityResult(int requestCode, int resultCode, Intent intent){
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (requestCode == REQUEST_SELECT_FILE) {
                 if (webViewHelper.uploadMessage == null)
                     return;
                 webViewHelper.uploadMessage.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(resultCode, intent));
                 webViewHelper.uploadMessage = null;
             }
-        }
-        else if (requestCode == FILECHOOSER_RESULTCODE)
-        {
+        }else 
+            if (requestCode == FILECHOOSER_RESULTCODE) {
             if (null == webViewHelper.mUploadMessage)
                 return;
             // Use MainActivity.RESULT_OK if you're implementing WebView inside Fragment
@@ -173,8 +161,8 @@ public class MainActivity extends AppCompatActivity {
             Uri result = intent == null || resultCode != MainActivity.RESULT_OK ? null : intent.getData();
             webViewHelper.mUploadMessage.onReceiveValue(result);
             webViewHelper.mUploadMessage = null;
-        }
-        else
+        }else{
             Toast.makeText(getApplicationContext(), "Failed to File", Toast.LENGTH_LONG).show();
-    }
+        }
+    }        
 }
