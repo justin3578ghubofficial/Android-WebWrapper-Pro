@@ -242,23 +242,9 @@ public class WebViewHelper {
 
             @Override
             public boolean onJsConfirm(WebView view, String url, String message, final JsResult result) {
-                alertDialog.setMessage(message);
-                alertDialog.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        result.confirm();
-                    }
-                });
-                alertDialog.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        result.cancel();
-                    }
-                });
-                alertDialog.create();
-                alertDialog.show();
+                uiManager.showJsConfirmDialog(message, result);
                 return true;
-            }
+            }     
         });
 
         // Set up Webview client
@@ -336,15 +322,7 @@ public class WebViewHelper {
     public void onResume() {
         webView.onResume();
     }
-
-    // show "no app found" dialog
-    private void showNoAppDialog() {
-        alertDialog.setTitle(R.string.noapp_heading);
-        alertDialog.setMessage(R.string.noapp_description);
-        alertDialog.create();
-        alertDialog.show();
-    }
-
+    
     // handle load errors
     private void handleLoadError(WebView view, WebResource request, webResourceError error) {
          // Check if the error happened on the main frame page request
@@ -408,10 +386,10 @@ public class WebViewHelper {
                 if (intent.resolveActivity(activity.getPackageManager()) != null) {
                     activity.startActivity(intent);
                 } else {
-                    showNoAppDialog();
+                    uiManager.showNoAppDialog();
                 }
             } catch (Exception e) {
-                showNoAppDialog();
+                uiManager.showNoAppDialog();
             }
             // 3. DO NOT call view.loadUrl() here. Returning true successfully 
             // aborts the external load, leaving the WebView safely on its current internal page.
