@@ -42,8 +42,8 @@ public class UIManager {
     }
 
     /**
-     * Setup swipe refresh functionality
-     */
+    * Setup swipe refresh functionality
+    */
     public void setupSwipeContainer() {
         if (Constants.REFRESH) {
             swipeContainer.setOnRefreshListener(() -> {
