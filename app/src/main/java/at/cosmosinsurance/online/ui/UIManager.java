@@ -2,17 +2,21 @@ package at.cosmosinsurance.online.ui;
 
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
+import android.webkit.JsResult;
 import android.webkit.WebView;
 import android.widget.ProgressBar;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import at.cosmosinsurance.online.Constants;
@@ -25,6 +29,7 @@ public class UIManager {
     private ProgressBar progressSpinner;
     private ProgressBar progressBar;
     private SwipeRefreshLayout swipeContainer;
+    private AlertDialog.Builder alertDialog;
     private boolean pageLoaded = false;
 
     public UIManager(Activity activity) {
@@ -33,6 +38,7 @@ public class UIManager {
         this.progressSpinner = activity.findViewById(R.id.progressSpinner);
         this.swipeContainer = activity.findViewById(R.id.swipeContainer);
         this.webView = activity.findViewById(R.id.webView);
+        this.alertDialog = new AlertDialog.Builder(activity);
     }
 
     /**
@@ -101,5 +107,49 @@ public class UIManager {
             ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription(label, icon, color);
             activity.setTaskDescription(taskDescription);
         }
+    }
+
+    // show "no app found" dialog
+    public void showNoAppDialog() {
+        alertDialog.setIcon(ContextCompat.getDrawable(activity, R.drawable.ic_dialog_alert_24));
+        alertDialog.setTitle(R.string.no_app_found_title);
+        alertDialog.setMessage(R.string.no_app_found_message);
+        alertDialog.create();
+        alertDialog.show();
+    }
+
+    public void showJsConfirmDialog(String message, final JsResult result) {
+        alertDialog.setMessage(message);
+        alertDialog.setCancelable(true);
+        // Action if user selects 'yes'
+        alertDialog.setPositiveButton(R.string.ok, (dialogInterface, i) -> result.confirm());
+        // Actions if user selects 'no'
+        alertDialog.setNegativeButton(R.string.cancel, (dialogInterface, i) -> result.cancel());
+        // Create the alert dialog using alert dialog builder
+        alertDialog.create();
+        // Finally, display the dialog when user press back button
+        alertDialog.show();
+    }
+
+     // Exit app
+    public void exitApp() {
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        activity.startActivity(intent);
+    }
+
+    public void showExitDialog() {
+        alertDialog.setTitle(R.string.exit_title);
+        alertDialog.setMessage(R.string.exit_message);
+        alertDialog.setCancelable(true);
+        // Action if user selects 'yes'
+        alertDialog.setPositiveButton(R.string.yes, (dialogInterface, i) -> exitApp());
+        // Actions if user selects 'no'
+        alertDialog.setNegativeButton(R.string.no, (dialogInterface, i) -> dialogInterface.dismiss());
+        // Create the alert dialog using alert dialog builder
+        alertDialog.create();
+        // Finally, display the dialog when user press back button
+        alertDialog.show();
     }
 }
