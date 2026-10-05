@@ -1,15 +1,18 @@
 package at.cosmosinsurance.online;
 
+import static at.cosmosinsurance.online.webview.WebViewHelper.getHost;
+import static at.cosmosinsurance.online.webview.WebViewHelper.getBaseDomain;
+
 public class Constants {
     public Constants(){}
     // Root page
-    public static String getWebAppUrl() {
-        return BuildConfig.DEBUG ? "https://test.cosmosins.com/" : "https://cosmosinsurance.cy/";
-    }
+	public static String DEFAULT_URL = "https://www.sacrt.com";
+	public static String WEBAPP_URL = DEFAULT_URL;
+	public static String WEBAPP_HOST = getHost(WEBAPP_URL);
+	public static String WEBAPP_DOMAIN = getBaseDomain(WEBAPP_URL);
+	
 
-    public static String getWebAppHost() {
-        return BuildConfig.DEBUG ? "test.cosmosins.com" : "cosmosinsurance.cy";
-    }
+	public static boolean REFRESH = true;
 
 	// User Agent tweaks
     public static boolean POSTFIX_USER_AGENT = true; // set to true to append USER_AGENT_POSTFIX to user agent
