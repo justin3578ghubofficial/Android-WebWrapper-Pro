@@ -1,7 +1,73 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name" translatable="false">Cosmos Online</string>
-    <string name="offline_heading">You are offline.</string>
-    <string name="offline_description">Tap here to retry!</string>
-    <string name="noapp_heading">App not found.</string>
-    <string name="noapp_description">No App on this device can carry out this action.</string>
+    
+    <!--Dialog buttons-->
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="retry">Retry</string>
+    <string name="exit">Exit</string>
+    <string name="later">Maybe later</string>
+
+    <!--No App Found dialog-->
+    <string name="no_app_found_title">App not found.</string>
+    <string name="no_app_found_message">No App on this device can carry out this action.</string>
+
+    <!--Exit dialog-->
+    <string name="exit_title">Exit confirmation</string>
+    <string name="exit_message">Are you sure that you want to exit this application?</string>
+
+    <!--"No connection" dialog-->
+    <string name="no_connection_title">Connection error</string>
+    <string name="no_connection_message">Please check your internet connection</string>
+
+
+    <!--Download Files-->
+    <string name="download_file" tools:ignore="TypographyEllipsis">Downloading file...</string>
+    <string name="download_started">Download Started:</string>
+
+    <!--WebView Error Messages-->
+    <string name="error_host_lookup_title">Server Not Found</string>
+    <string name="error_host_lookup_message">Could not resolve the address. Please check your network or spelling.</string>
+    <string name="error_connect_timeout_title">Connection Timed Out</string>
+    <string name="error_connect_timeout_message">The server took too long to respond. Please check your connection.</string>
+    <string name="error_failed_ssl_handshake_title">Security Alert</string>
+    <string name="error_failed_ssl_handshake_message">Could not establish a secure connection with the server.</string>
+    <string name="error_authentication_title">Authentication Required</string>
+    <string name="error_authentication_message">Credentials are required to access this resource or proxy.</string>
+    <string name="error_bad_url_title">Invalid Address</string>
+    <string name="error_bad_url_message">The requested URL is malformed.</string>
+    <string name="error_file_title">File Missing</string>
+    <string name="error_file_message">The requested local file could not be found.</string>
+    <string name="error_request_title">Too Many Request</string>
+    <string name="error_request_message">The server is receiving too many connections. Please wait.</string>
+    <string name="error_io_title">Network Error</string>
+    <string name="error_io_message">An input/output error occurred while reading from the network.</string>
+    <string name="error_redirect_loop_title">Redirect Loop</string>
+    <string name="error_redirect_loop_message">The page redirected the request too many times.</string>
+    <string name="error_unable_load_title">Unable to Load Page</string>
+    <string name="error_unable_load_message">An unexpected network error occurred.</string>
+
+    <!--400/500 Error Messages-->
+    <string name="error_400_title">Bad Request (400)</string>
+    <string name="error_400_message">The server could not understand the request due to invalid syntax.</string>
+    <string name="error_401_title">Unauthorized (401)</string>
+    <string name="error_401_message">Access is restricted. You must log in or provide authentication credentials.</string>
+    <string name="error_403_title">Access Forbidden (403)</string>
+    <string name="error_403_message">You dont have permission to access this resource or directory.</string>
+    <string name="error_404_title">Page Not Found (404)</string>
+    <string name="error_404_message">The page you are looking for doesnt exist, was renamed, or removed.</string>
+    <string name="error_408_title">Request Timeout (408)</string>
+    <string name="error_408_message">The server timed out waiting for the browser to send its request.</string>
+    <string name="error_429_title">Too Many Requests (429)</string>
+    <string name="error_500_title">Internal Server Error (500)</string>
+    <string name="error_500_message">The server encountered an unexpected condition that prevented it from completing the request.</string>
+    <string name="error_502_title">Bad Gateway (502)</string>
+    <string name="error_502_message">The server received an invalid response from an upstream server.</string>
+    <string name="error_503_title">Service Unavailable (503)</string>
+    <string name="error_503_message">The server is temporarily unable to handle the request due to maintenance or overload.</string>
+    <string name="error_504_title">Gateway Timeout (504)</string>
+    <string name="error_504_message">The gateway timed out waiting for the upstream server to respond.</string>
+
 </resources>
