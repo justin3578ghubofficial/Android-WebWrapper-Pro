@@ -62,7 +62,6 @@ public class WebViewHelper {
         this.uiManager = uiManager;
         this.webView = (WebView) activity.findViewById(R.id.webView);
         this.webSettings = webView.getSettings();
-        this.alertDialog = new AlertDialog.Builder(activity);
         WebView.setWebContentsDebuggingEnabled(false);
     }
 
