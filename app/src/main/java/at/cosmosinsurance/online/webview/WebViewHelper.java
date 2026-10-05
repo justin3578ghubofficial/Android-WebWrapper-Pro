@@ -10,17 +10,14 @@ import android.app.Activity;
 import android.app.DownloadManager;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
-import android.os.Handler;
 import android.os.Message;
 import android.webkit.CookieManager;
 import android.webkit.DownloadListener;
@@ -37,8 +34,6 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -53,7 +48,6 @@ public class WebViewHelper {
     private UIManager uiManager;
     private WebView webView;
     private WebSettings webSettings;
-    private AlertDialog.Builder alertDialog;
     public ValueCallback<Uri[]> uploadMessage;
     public ValueCallback<Uri> mUploadMessage;
 
@@ -346,7 +340,6 @@ public class WebViewHelper {
         }
     }
         
-
     private List<String> extractValidMimeTypes(String[] mimeTypes) {
         List<String> results = new ArrayList<String>();
         List<String> mimes;
@@ -448,6 +441,11 @@ public class WebViewHelper {
         return false;
     }
 
+    public boolean canGoBack() {
+        return webView.canGoBack();
+    }
+
+
     // load app startpage
     public void loadHome() {
         webView.loadUrl(Constants.WEBAPP_URL);
@@ -455,12 +453,22 @@ public class WebViewHelper {
 
     // load URL from intent
     public void loadIntentUrl(String url) {
-        if (!url.equals("") && url.contains(Constants.WEBAPP_HOST)) {
-            webView.loadUrl(url);
-        } else {
-            // Fallback
+        if (url == null || url.isEmpty()) {
+            loadHome();
+            return;
+        }
+        try {
+            Uri uri = Uri.parse(url);
+            String host = uri.getHost();
+            // Checks if the host exactly matches or ends with your domain
+            if (host != null && (host.equals(Constants.WEBAPP_HOST) || host.endsWith("." + Constants.WEBAPP_HOST))) {
+                webView.loadUrl(url);
+            } else {
+                loadHome();
+            }
+        } catch (Exception e) {
+            // Fallback if the URL is malformed
             loadHome();
         }
     }
-
 }
