@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.webkit.WebChromeClient;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -33,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Setup Theme
-        setTheme(R.style.AppTheme_NoActionBar);
+        setTheme(R.style.Theme_AppTheme);
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
@@ -47,6 +48,31 @@ public class MainActivity extends AppCompatActivity {
         webViewHelper.initWebView();
         uiManager.changeRecentAppsIcon();
         checkAndRequestPermissions();
+
+         // Modern Back Press Handling
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (Constants.EXIT_ON_BACK) {
+                    if (Constants.SHOW_EXIT_DIALOG) {
+                        uiManager.showExitDialog();
+                    } else {
+                        finish();
+                    }
+                    return;
+                }
+                if (!webViewHelper.goBack()) {
+                    setEnabled(false);
+                    getOnBackPressedDispatcher().onBackPressed();
+                } else {
+                    if (Config.SHOW_EXIT_DIALOG) {
+                        uiManager.showExitDialog();
+                    } else {
+                        finish();
+                    }
+                }
+            }
+        });
 
         // Check for Intents
         try {
